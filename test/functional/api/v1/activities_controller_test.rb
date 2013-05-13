@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'pry'
 
 class Api::V1::ActivitiesControllerTest < ActionController::TestCase
 
@@ -15,8 +16,9 @@ class Api::V1::ActivitiesControllerTest < ActionController::TestCase
     assert_equal @rubygem_1.attributes['name'], gems[0]['name']
     assert_equal @rubygem_2.attributes['name'], gems[1]['name']
     assert_equal @rubygem_3.attributes['name'], gems[2]['name']
-    assert gems[0]['prerelease'], "JSON for the first gem should have contained prerelease"
-    assert gems[0]['built_at'], "JSON for the first gem should have contained built_at"
+    assert gems[0]['versions'], "JSON for the first gem should have contained the version"
+    assert gems[0]['versions'][0]['prerelease'], "JSON for the first gem should have contained version prerelease"
+    assert gems[0]['versions'][0]['built_at'], "JSON for the first gem should have contained version built_at"
   end
 
   context "No signed in-user" do
@@ -55,8 +57,8 @@ class Api::V1::ActivitiesControllerTest < ActionController::TestCase
     context "On GET to just_updated" do
       setup do
         @rubygem_1 = create(:rubygem)
-        @version_1 = create(:version, :rubygem => @rubygem_1, :prerelease => true, :built_at => Time.now)
-        @version_2 = create(:version, :rubygem => @rubygem_1, :prerelease => true, :built_at => Time.now)
+        @version_1 = create(:version, :rubygem => @rubygem_1, :number => '1.0.0', :built_at => Time.now)
+        @version_2 = create(:version, :rubygem => @rubygem_1, :number => '1.0.0.pre', :built_at => Time.now)
 
         @rubygem_2 = create(:rubygem)
         @version_3 = create(:version, :rubygem => @rubygem_2)
@@ -84,7 +86,7 @@ class Api::V1::ActivitiesControllerTest < ActionController::TestCase
 
       should "return correct XML for just_updated gems" do
         get :just_updated, :format => :xml
-        gems = Hash.from_xml(Nokogiri.parse(@response.body).to_xml)['rubygems']
+        gems = Hash.from_xml(Nokogiri.parse(@response.body).to_xml)['objects']
         should_return_just_updated_gems(gems)
       end
     end

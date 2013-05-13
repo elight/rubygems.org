@@ -92,9 +92,9 @@ module RubygemsHelper
     versions.map do |version|
       gem = version.rubygem
       JSON.parse(gem.to_json).tap do |hash|
-        hash[:built_at] = version.built_at
-        hash[:prerelease] = version.prerelease
+        hash[:versions] = []
+        hash[:versions] << version
       end
-    end    
+    end
   end
 end

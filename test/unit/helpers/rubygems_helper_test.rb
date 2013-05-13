@@ -107,8 +107,8 @@ class RubygemsHelperTest < ActionView::TestCase
     end
     
     should "propagate the prerelease flag for the Gem Version" do
-      assert @gem_hashes[0][:prerelease], "prerelease came back with a value of '#{@gem_hashes.first[:prerelease]}'"
-      refute @gem_hashes[1][:prerelease]
+      assert @gem_hashes[0][:versions][0][:prerelease], "prerelease came back with a value of '#{@gem_hashes.first[:prerelease]}'"
+      refute @gem_hashes[1][:versions][0][:prerelease]
     end
   end
 
